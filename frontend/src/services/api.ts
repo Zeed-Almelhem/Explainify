@@ -1,13 +1,14 @@
 import axios from 'axios';
+import { Model } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000/api/v1';
 
-export interface Model {
-  id: string;
-  name: string;
-  type: string;
-  created_at: string;
-}
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export interface Explanation {
   id: string;
@@ -17,13 +18,6 @@ export interface Explanation {
   created_at: string;
 }
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
 export const modelService = {
   getModels: async (): Promise<Model[]> => {
     const response = await api.get('/models');
@@ -32,7 +26,7 @@ export const modelService = {
 
   uploadModel: async (file: File): Promise<Model> => {
     const formData = new FormData();
-    formData.append('model', file);
+    formData.append('file', file);
     const response = await api.post('/models/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -51,10 +45,10 @@ export const explanationService = {
 
   generateExplanation: async (params: {
     model_id: string;
-    type: 'feature_importance' | 'instance_explanation';
-    input_data: any;
+    type: string;
+    input_data: Record<string, number>;
   }): Promise<Explanation> => {
-    const response = await api.post('/explanations/generate', params);
+    const response = await api.post('/explanations', params);
     return response.data;
   },
 };

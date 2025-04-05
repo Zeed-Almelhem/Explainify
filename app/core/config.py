@@ -11,7 +11,12 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Security
-    ALLOWED_ORIGINS: List[AnyHttpUrl] = []
+    ALLOWED_ORIGINS: List[str] = [
+        "http://localhost:5173",  # Default Vite dev server
+        "http://localhost:5174",  # Alternative port
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+    ]
     
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./explainify.db")
