@@ -4,7 +4,14 @@ import Layout from './components/Layout';
 import ModelsPage from './pages/ModelsPage';
 import ExplanationsPage from './pages/ExplanationsPage';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (
