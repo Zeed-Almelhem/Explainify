@@ -3,167 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAI Explainify</title>
-    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Explainify - Model Interpretability</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/material-icons.css">
 </head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Explainify</h1>
+            <p>Model Interpretability Made Simple</p>
+        </header>
 
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8">XAI Explainify</h1>
-        
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Upload Files</h2>
-            <form id="uploadForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Dataset (CSV)</label>
-                    <input type="file" id="dataset" accept=".csv" required
-                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">ML Model</label>
-                    <input type="file" id="model" accept=".pkl,.h5,.pt,.pth" required
-                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
-                </div>
-                <button type="button" onclick="uploadFiles()"
-                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
-                    Generate Explanations
-                </button>
-            </form>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Try Example Models</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <h3 class="text-lg font-semibold mb-2">Classification</h3>
-                    <p class="text-sm text-gray-600 mb-4">Iris Dataset with Logistic Regression</p>
-                    <button onclick="tryExample('classification')"
-                            class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
-                        Try Classification
+        <main>
+            <section class="examples">
+                <h2>Try Examples</h2>
+                <div class="example-buttons">
+                    <button onclick="tryExample('classification')">
+                        <i class="material-icons">category</i>
+                        Classification Example
+                    </button>
+                    <button onclick="tryExample('regression')">
+                        <i class="material-icons">timeline</i>
+                        Regression Example
                     </button>
                 </div>
-                <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <h3 class="text-lg font-semibold mb-2">Regression</h3>
-                    <p class="text-sm text-gray-600 mb-4">California Housing with Linear Regression</p>
-                    <button onclick="tryExample('regression')"
-                            class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
-                        Try Regression
-                    </button>
-                </div>
-                <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <h3 class="text-lg font-semibold mb-2">Clustering</h3>
-                    <p class="text-sm text-gray-600 mb-4">Synthetic Data with K-Means</p>
-                    <button onclick="tryExample('clustering')"
-                            class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
-                        Try Clustering
-                    </button>
-                </div>
-            </div>
-        </div>
+            </section>
 
-        <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-xl font-semibold mb-4">Feature Importance</h3>
-                <div id="feature-importance" class="min-h-[400px]"></div>
-            </div>
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-xl font-semibold mb-4">Global Explanations</h3>
-                <div id="global-explanations" class="min-h-[400px]"></div>
-            </div>
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-xl font-semibold mb-4">Local Explanations</h3>
-                <div id="local-explanations" class="min-h-[400px]"></div>
-            </div>
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-xl font-semibold mb-4">Influential Samples</h3>
-                <div id="influential-samples" class="min-h-[400px]"></div>
-            </div>
-        </div>
+            <section class="upload">
+                <h2>Upload Your Model</h2>
+                <form id="upload-form" onsubmit="event.preventDefault(); uploadFiles();">
+                    <div class="file-input">
+                        <label for="model-file">
+                            <i class="material-icons">upload_file</i>
+                            Model File (pkl, h5, pt)
+                        </label>
+                        <input type="file" id="model-file" accept=".pkl,.h5,.pt,.pth">
+                    </div>
+                    <div class="file-input">
+                        <label for="data-file">
+                            <i class="material-icons">table_chart</i>
+                            Data File (csv)
+                        </label>
+                        <input type="file" id="data-file" accept=".csv">
+                    </div>
+                    <button type="submit">
+                        <i class="material-icons">play_arrow</i>
+                        Analyze Model
+                    </button>
+                </form>
+            </section>
+
+            <section id="dashboard-container" style="display: none;">
+                <!-- Dashboard will be loaded here -->
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Explainify. All rights reserved.</p>
+        </footer>
     </div>
-
-    <script>
-        function uploadFiles() {
-            const datasetFile = document.getElementById('dataset').files[0];
-            const modelFile = document.getElementById('model').files[0];
-
-            if (!datasetFile || !modelFile) {
-                alert('Please select both dataset and model files');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('dataset', datasetFile);
-            formData.append('model', modelFile);
-
-            fetch('/api/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => displayResults(data))
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error processing request. Please check the console for details.');
-            });
-        }
-
-        function tryExample(modelType) {
-            fetch(`/api/example/${modelType}`, {
-                method: 'POST'
-            })
-            .then(response => response.json())
-            .then(data => displayResults(data))
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error processing request. Please check the console for details.');
-            });
-        }
-
-        function displayResults(data) {
-            try {
-                // Feature Importance
-                const featureImportance = JSON.parse(data.feature_importance);
-                Plotly.newPlot('feature-importance', 
-                    [featureImportance.data[0]], 
-                    {...featureImportance.layout, height: 400}
-                );
-
-                // Global Explanations
-                const globalExplanations = JSON.parse(data.global_explanations);
-                Plotly.newPlot('global-explanations', 
-                    [globalExplanations.data[0]], 
-                    {...globalExplanations.layout, height: 400}
-                );
-
-                // Local Explanations
-                const localExplanationsDiv = document.getElementById('local-explanations');
-                localExplanationsDiv.innerHTML = ''; // Clear previous explanations
-                
-                data.local_explanations.forEach((json, index) => {
-                    const explanation = JSON.parse(json);
-                    const div = document.createElement('div');
-                    div.id = `local-explanation-${index}`;
-                    div.className = 'mb-4 min-h-[300px]';
-                    localExplanationsDiv.appendChild(div);
-                    
-                    Plotly.newPlot(div.id, 
-                        [explanation.data[0]], 
-                        {...explanation.layout, height: 300}
-                    );
-                });
-
-                // Influential Samples
-                const influentialSamples = JSON.parse(data.influential_samples);
-                Plotly.newPlot('influential-samples', 
-                    [influentialSamples.data[0]], 
-                    {...influentialSamples.layout, height: 400}
-                );
-            } catch (error) {
-                console.error('Error displaying results:', error);
-                alert('Error displaying results. Please check the console for details.');
-            }
-        }
-    </script>
+    <script src="/static/main.js"></script>
 </body>
 </html>

@@ -44,3 +44,22 @@ class ModelHandler:
                 raise ValueError("Unable to determine model type")
         except Exception as e:
             raise ValueError(f"Error detecting model type: {str(e)}")
+            
+    def predict(self, X):
+        """Make predictions using the loaded model"""
+        try:
+            if self.model_type == "clustering":
+                return self.model.predict(X) if hasattr(self.model, 'predict') else self.model.fit_predict(X)
+            else:
+                return self.model.predict(X)
+        except Exception as e:
+            raise ValueError(f"Error making predictions: {str(e)}")
+            
+    def predict_proba(self, X):
+        """Get prediction probabilities for classification models"""
+        if self.model_type != "classification":
+            raise ValueError("predict_proba is only available for classification models")
+        try:
+            return self.model.predict_proba(X)
+        except Exception as e:
+            raise ValueError(f"Error getting prediction probabilities: {str(e)}")
