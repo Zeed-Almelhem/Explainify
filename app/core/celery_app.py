@@ -1,10 +1,12 @@
 from celery import Celery
 from app.core.config import settings
 
+redis_url = f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/0"
+
 celery_app = Celery(
     "explainify",
-    broker=settings.REDIS_URL,
-    backend=settings.REDIS_URL
+    broker=redis_url,
+    backend=redis_url
 )
 
 celery_app.conf.task_routes = {
