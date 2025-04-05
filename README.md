@@ -46,3 +46,5 @@ python app.py
    - Global model behavior
    - Local prediction explanations
    - Influential training samples
+
+**Note:** This code is kind of functional go back to in case of any new bugs.
