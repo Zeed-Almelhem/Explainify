@@ -73,23 +73,18 @@ class ELI5Explainer(BaseExplainer):
             if hasattr(model, "coef_"):
                 # For linear models
                 contributions = []
-                if len(model.coef_.shape) > 1:
-                    # Multi-class case
-                    for i, target_name in enumerate(request.target_names):
-                        feature_contributions = {}
-                        for j, feature_name in enumerate(request.feature_names):
-                            feature_contributions[feature_name] = float(data[0, j] * model.coef_[i, j])
-                        contributions.append({
-                            "target": target_name,
-                            "contributions": feature_contributions
-                        })
-                else:
-                    # Binary classification or regression
+                coef = model.coef_
+                if len(coef.shape) == 1:
+                    # Convert to 2D array for consistent handling
+                    coef = coef.reshape(1, -1)
+
+                # Multi-class case or binary classification
+                for i, target_name in enumerate(request.target_names):
                     feature_contributions = {}
                     for j, feature_name in enumerate(request.feature_names):
-                        feature_contributions[feature_name] = float(data[0, j] * model.coef_[0, j])  # Update here
+                        feature_contributions[feature_name] = float(data[0, j] * coef[i if i < coef.shape[0] else 0, j])
                     contributions.append({
-                        "target": request.target_names[0],
+                        "target": target_name,
                         "contributions": feature_contributions
                     })
 
@@ -114,7 +109,7 @@ class ELI5Explainer(BaseExplainer):
         """Generate explanations for tensorflow models."""
         if request.format == ExplanationFormat.FEATURE_IMPORTANCE:
             # Get feature importances through permutation
-            base_score = model.evaluate(data, verbose=0)[0]  # Get first value from evaluate output
+            base_score = model.evaluate(data, verbose=0)  # Returns a single float
             importances = []
             
             for i in range(data.shape[1]):
@@ -123,7 +118,7 @@ class ELI5Explainer(BaseExplainer):
                 permuted_data[:, i] = np.random.permutation(permuted_data[:, i])
                 
                 # Calculate importance as decrease in performance
-                new_score = model.evaluate(permuted_data, verbose=0)[0]  # Get first value from evaluate output
+                new_score = model.evaluate(permuted_data, verbose=0)  # Returns a single float
                 importance = abs(base_score - new_score)  # Use absolute difference
                 importances.append(importance)
             
